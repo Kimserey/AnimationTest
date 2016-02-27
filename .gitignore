@@ -1,0 +1,4 @@
+packages/*
+AnimationUINext/bin/*
+AnimationUINext/obj/*
+.DS_Store
