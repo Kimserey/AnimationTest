@@ -17105,30 +17105,78 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
 ;
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Animation,FadeOptions,UI,Next,AttrModule,Trans,Trans1,View1,PrintfHelpers,Slide,Interpolation1,Easing,An,Doc,List,AttrProxy,Client;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Animation,UI,Next,Trans,Trans1,AttrModule,View1,Fade,PrintfHelpers,Slide,Interpolation1,Easing,An,Doc,List,AttrProxy,Client;
  Runtime.Define(Global,{
   AnimationUINext:{
    Animation:{
-    FadeOptions:Runtime.Class({},{
-     FadeIn:function(ms)
+    Fade:Runtime.Class({},{
+     create:function(x)
      {
-      return Runtime.New(FadeOptions,{
+      var anim,x1,x2,_,arg00,transition,_1,arg001;
+      anim=Animation.anim(x.TimeInMs);
+      x1=Trans.Create(anim);
+      if(x.In)
+       {
+        arg00=function()
+        {
+         return(anim(0))(1);
+        };
+        _=function(arg10)
+        {
+         return Trans1.Enter(arg00,arg10);
+        };
+       }
+      else
+       {
+        _=function(x3)
+        {
+         return x3;
+        };
+       }
+      x2=_(x1);
+      if(x.Out)
+       {
+        arg001=function()
+        {
+         return(anim(1))(0);
+        };
+        _1=function(arg10)
+        {
+         return Trans1.Exit(arg001,arg10);
+        };
+       }
+      else
+       {
+        _1=function(x3)
+        {
+         return x3;
+        };
+       }
+      transition=_1(x2);
+      return AttrModule.AnimatedStyle("opacity",transition,View1.Const(1),function(value)
+      {
+       return Global.String(value);
+      });
+     },
+     fadesIn:function(x,ms)
+     {
+      return Runtime.New(Fade,{
        In:true,
        Out:false,
        TimeInMs:ms
       });
      },
-     FadeInAndOut:function(ms)
+     fadesInAndOut:function(x,ms)
      {
-      return Runtime.New(FadeOptions,{
+      return Runtime.New(Fade,{
        In:true,
        Out:true,
        TimeInMs:ms
       });
      },
-     FadeOut:function(ms)
+     fadesOut:function(x,ms)
      {
-      return Runtime.New(FadeOptions,{
+      return Runtime.New(Fade,{
        In:false,
        Out:true,
        TimeInMs:ms
@@ -17191,22 +17239,13 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        TimeInMs:0
       });
      },
-     lastForInMs:function(ms,x)
+     lastsForInMs:function(ms,x)
      {
       return Runtime.New(Slide,{
        Direction:x.Direction,
        Initial:x.Initial,
        SlideBy:x.SlideBy,
        TimeInMs:ms
-      });
-     },
-     setDirection:function(dir,x)
-     {
-      return Runtime.New(Slide,{
-       Direction:dir,
-       Initial:x.Initial,
-       SlideBy:x.SlideBy,
-       TimeInMs:x.TimeInMs
       });
      },
      slidesByPixels:function(px,x)
@@ -17226,6 +17265,15 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        SlideBy:x.SlideBy,
        TimeInMs:x.TimeInMs
       });
+     },
+     takesDirection:function(dir,x)
+     {
+      return Runtime.New(Slide,{
+       Direction:dir,
+       Initial:x.Initial,
+       SlideBy:x.SlideBy,
+       TimeInMs:x.TimeInMs
+      });
      }
     }),
     anim:function(time)
@@ -17240,54 +17288,6 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        return An.Simple(arg00,arg10,time,arg30,arg40);
       };
      };
-    },
-    fade:function(options)
-    {
-     var anim,x,x1,_,arg00,transition,_1,arg001;
-     anim=Animation.anim(options.TimeInMs);
-     x=Trans.Create(anim);
-     if(options.In)
-      {
-       arg00=function()
-       {
-        return(anim(0))(1);
-       };
-       _=function(arg10)
-       {
-        return Trans1.Enter(arg00,arg10);
-       };
-      }
-     else
-      {
-       _=function(x2)
-       {
-        return x2;
-       };
-      }
-     x1=_(x);
-     if(options.Out)
-      {
-       arg001=function()
-       {
-        return(anim(1))(0);
-       };
-       _1=function(arg10)
-       {
-        return Trans1.Exit(arg001,arg10);
-       };
-      }
-     else
-      {
-       _1=function(x2)
-       {
-        return x2;
-       };
-      }
-     transition=_1(x1);
-     return AttrModule.AnimatedStyle("opacity",transition,View1.Const(1),function(value)
-     {
-      return Global.String(value);
-     });
     }
    },
    Client:{
@@ -17295,7 +17295,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     {
      var arg10;
      arg10=Slide.get_Default();
-     return Doc.RunById("main",Doc.Element("h1",List.ofArray([AttrProxy.Create("style","position: absolute;"),Slide.create(Slide.slidesByPixels(100,Slide.lastForInMs(1000,Slide.setDirection({
+     return Doc.RunById("main",Doc.Element("h1",List.ofArray([AttrProxy.Create("style","position: absolute;"),Slide.create(Slide.slidesByPixels(100,Slide.lastsForInMs(1000,Slide.takesDirection({
       $:1
      },arg10))))]),List.ofArray([Doc.TextNode("hello world")])));
     })
@@ -17306,13 +17306,13 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
  {
   AnimationUINext=Runtime.Safe(Global.AnimationUINext);
   Animation=Runtime.Safe(AnimationUINext.Animation);
-  FadeOptions=Runtime.Safe(Animation.FadeOptions);
   UI=Runtime.Safe(Global.WebSharper.UI);
   Next=Runtime.Safe(UI.Next);
-  AttrModule=Runtime.Safe(Next.AttrModule);
   Trans=Runtime.Safe(Next.Trans);
   Trans1=Runtime.Safe(Next.Trans1);
+  AttrModule=Runtime.Safe(Next.AttrModule);
   View1=Runtime.Safe(Next.View1);
+  Fade=Runtime.Safe(Animation.Fade);
   PrintfHelpers=Runtime.Safe(Global.WebSharper.PrintfHelpers);
   Slide=Runtime.Safe(Animation.Slide);
   Interpolation1=Runtime.Safe(Next.Interpolation1);

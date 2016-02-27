@@ -17,18 +17,16 @@ module Animation =
         Out: bool
         TimeInMs: double
     } with
-        static member FadeIn ms = { In = true; Out = false; TimeInMs = ms }
-        static member FadeOut ms = { In = false; Out = true; TimeInMs = ms }
-        static member FadeInAndOut ms = { In = true; Out = true; TimeInMs = ms }
-    
-    let fade options =
-        let anim =
-            anim options.TimeInMs
-        let transition =
-            Trans.Create anim
-            |> (if options.In then Trans.Enter (fun _ -> anim 0. 1.) else id)
-            |> (if options.Out then Trans.Exit (fun _ -> anim 1. 0.) else id)
-        Attr.AnimatedStyle "opacity" transition (View.Const 1.) string
+        static member fadesIn x ms = { In = true; Out = false; TimeInMs = ms }
+        static member fadesOut x ms = { In = false; Out = true; TimeInMs = ms }
+        static member fadesInAndOut x ms = { In = true; Out = true; TimeInMs = ms }
+        static member create x = 
+            let anim = anim x.TimeInMs
+            let transition =
+                Trans.Create anim
+                |> (if x.In then Trans.Enter (fun _ -> anim 0. 1.) else id)
+                |> (if x.Out then Trans.Exit (fun _ -> anim 1. 0.) else id)
+            Attr.AnimatedStyle "opacity" transition (View.Const 1.) string   
 
     type Slide = {
         Direction: SlideDirection
@@ -42,10 +40,10 @@ module Animation =
               Initial = 0.
               SlideBy = 0.
               TimeInMs = 0. }
-        static member setDirection  dir x = { x with Direction = dir }
+        static member takesDirection  dir x = { x with Direction = dir }
         static member startsAtPixels px x = { x with Initial = px }
         static member slidesByPixels px x = { x with SlideBy = px }
-        static member lastForInMs    ms (x: Slide) = { x with TimeInMs = ms }
+        static member lastsForInMs    ms (x: Slide) = { x with TimeInMs = ms }
         static member create x =
             let (style, animation, final) = 
                 match x.Direction with 
@@ -75,8 +73,8 @@ module Client =
     let Main =
         h1Attr [ attr.style "position: absolute;"
                  Slide.Default
-                 |> Slide.setDirection Down
-                 |> Slide.lastForInMs 1000.
+                 |> Slide.takesDirection Down
+                 |> Slide.lastsForInMs 1000.
                  |> Slide.slidesByPixels 100.
                  |> Slide.create  ] [ text "hello world" ]
         |> Doc.RunById "main"
