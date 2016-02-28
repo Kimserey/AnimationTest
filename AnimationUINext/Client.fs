@@ -9,7 +9,7 @@ open WebSharper.UI.Next.Client
 
 [<AutoOpen; JavaScript>]
 module Animation =
-    let private anim time = 
+    let anim time = 
         Anim.Simple Interpolation.Double Easing.CubicInOut time
 
     type Fade = {
@@ -20,12 +20,12 @@ module Animation =
         static member fadesIn x ms = { In = true; Out = false; TimeInMs = ms }
         static member fadesOut x ms = { In = false; Out = true; TimeInMs = ms }
         static member fadesInAndOut x ms = { In = true; Out = true; TimeInMs = ms }
-        static member create x = 
+        static member create x =
             let anim = anim x.TimeInMs
             let transition =
                 Trans.Create anim
-                |> (if x.In then Trans.Enter (fun _ -> anim 0. 1.) else id)
-                |> (if x.Out then Trans.Exit (fun _ -> anim 1. 0.) else id)
+                |> (if x.In then Trans.Enter (fun x -> anim 0. x) else id)
+                |> (if x.Out then Trans.Exit (fun x -> anim x 0.) else id)
             Attr.AnimatedStyle "opacity" transition (View.Const 1.) string   
 
     type Slide = {
@@ -63,18 +63,45 @@ module Animation =
                     let value = x.Initial + x.SlideBy
                     "left", anim x.TimeInMs x.Initial value, value
 
-            Attr.AnimatedStyle style (Trans.Create (anim x.TimeInMs) |> Trans.Enter (fun _ -> animation)) (View.Const final) (sprintf "%Apx")
+            Attr.AnimatedStyle style (Trans.Create (anim x.TimeInMs) 
+            |> Trans.Enter (fun _ -> animation)) (View.Const final) (sprintf "%Apx")
+
     and SlideDirection = Up | Down | Left | Right
 
 
 [<JavaScript>]
 module Client =
 
-    let Main =
-        h1Attr [ attr.style "position: absolute;"
-                 Slide.Default
-                 |> Slide.takesDirection Down
-                 |> Slide.lastsForInMs 1000.
-                 |> Slide.slidesByPixels 100.
-                 |> Slide.create  ] [ text "hello world" ]
+    let rvTest = Var.Create 5
+    let rvShow = Var.Create true
+
+    let btns =
+        [ div [ text "hide"
+                Doc.CheckBox [] rvShow :> Doc ]
+          Doc.IntInputUnchecked [] rvTest ]
+        |> Seq.cast
+
+    /// anim represents the value being animated over the duration
+    let anim1 =
+        Anim.Simple Interpolation.Double Easing.CubicInOut 750.
+
+    let animation =
+        Trans.Trivial()
+        |> Trans.Change anim1
+        |> Trans.Enter (fun x -> anim1 0. x)
+        |> Trans.Exit (fun x -> anim1 x 0.)
+
+    /// a transition is used to describe what to do with the animated value
+    let main =
+        [ rvShow.View
+          |> View.Map (function
+            | true -> divAttr [ attr.style "float: left;"
+                                Attr.AnimatedStyle "opacity" animation (View.Const 1.) string
+                                Attr.AnimatedStyle "transform" animation (View.Map double rvTest.View) (sprintf "translateY(%fem)") ]
+                              [ h1Attr [ attr.style "width: 160px;" ] 
+                                       [ text "hello world" ] ] :> Doc
+            | false -> Doc.Empty)
+          |> Doc.EmbedView
+          divAttr [ attr.style "float: right;" ] btns :> Doc ]
+        |> Doc.Concat
         |> Doc.RunById "main"

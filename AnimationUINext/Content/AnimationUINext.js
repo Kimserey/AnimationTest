@@ -17105,7 +17105,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
 ;
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Animation,UI,Next,Trans,Trans1,AttrModule,View1,Fade,PrintfHelpers,Slide,Interpolation1,Easing,An,Doc,List,AttrProxy,Client;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Animation,UI,Next,Trans,Trans1,AttrModule,View1,Fade,PrintfHelpers,Slide,Interpolation1,Easing,An,Client,List,Doc,T,View,AttrProxy,Var;
  Runtime.Define(Global,{
   AnimationUINext:{
    Animation:{
@@ -17291,13 +17291,72 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     }
    },
    Client:{
-    Main:Runtime.Field(function()
+    anim1:Runtime.Field(function()
     {
-     var arg10;
-     arg10=Slide.get_Default();
-     return Doc.RunById("main",Doc.Element("h1",List.ofArray([AttrProxy.Create("style","position: absolute;"),Slide.create(Slide.slidesByPixels(100,Slide.lastsForInMs(1000,Slide.takesDirection({
-      $:1
-     },arg10))))]),List.ofArray([Doc.TextNode("hello world")])));
+     var arg00,arg10;
+     arg00=Interpolation1.get_Double();
+     arg10=Easing.get_CubicInOut();
+     return function(arg30)
+     {
+      return function(arg40)
+      {
+       return An.Simple(arg00,arg10,750,arg30,arg40);
+      };
+     };
+    }),
+    animation:Runtime.Field(function()
+    {
+     var x,arg00,arg001,arg10,x2,arg002;
+     x=Trans.Trivial();
+     arg00=Client.anim1();
+     arg001=function(x1)
+     {
+      return((Client.anim1())(0))(x1);
+     };
+     arg10=Trans1.Change(arg00,x);
+     x2=Trans1.Enter(arg001,arg10);
+     arg002=function(x1)
+     {
+      return((Client.anim1())(x1))(0);
+     };
+     return Trans1.Exit(arg002,x2);
+    }),
+    btns:Runtime.Field(function()
+    {
+     var source,arg20;
+     arg20=List.ofArray([Doc.TextNode("hide"),Doc.CheckBox(Runtime.New(T,{
+      $:0
+     }),Client.rvShow())]);
+     source=List.ofArray([Doc.Element("div",[],arg20),Doc.IntInputUnchecked(Runtime.New(T,{
+      $:0
+     }),Client.rvTest())]);
+     return source;
+    }),
+    main:Runtime.Field(function()
+    {
+     var x;
+     x=Client.rvShow().get_View();
+     return Doc.RunById("main",Doc.Concat(List.ofArray([Doc.EmbedView(View.Map(function(_arg1)
+     {
+      return _arg1?Doc.Element("div",List.ofArray([AttrProxy.Create("style","float: left;"),AttrModule.AnimatedStyle("opacity",Client.animation(),View1.Const(1),function(value)
+      {
+       return Global.String(value);
+      }),AttrModule.AnimatedStyle("transform",Client.animation(),View.Map(function(value)
+      {
+       return+value;
+      },Client.rvTest().get_View()),function(_)
+      {
+       return"translateY("+_.toFixed(6)+"em)";
+      })]),List.ofArray([Doc.Element("h1",List.ofArray([AttrProxy.Create("style","width: 160px;")]),List.ofArray([Doc.TextNode("hello world")]))])):Doc.get_Empty();
+     },x)),Doc.Element("div",List.ofArray([AttrProxy.Create("style","float: right;")]),Client.btns())])));
+    }),
+    rvShow:Runtime.Field(function()
+    {
+     return Var.Create(true);
+    }),
+    rvTest:Runtime.Field(function()
+    {
+     return Var.Create(5);
     })
    }
   }
@@ -17318,14 +17377,22 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
   Interpolation1=Runtime.Safe(Next.Interpolation1);
   Easing=Runtime.Safe(Next.Easing);
   An=Runtime.Safe(Next.An);
-  Doc=Runtime.Safe(Next.Doc);
+  Client=Runtime.Safe(AnimationUINext.Client);
   List=Runtime.Safe(Global.WebSharper.List);
+  Doc=Runtime.Safe(Next.Doc);
+  T=Runtime.Safe(List.T);
+  View=Runtime.Safe(Next.View);
   AttrProxy=Runtime.Safe(Next.AttrProxy);
-  return Client=Runtime.Safe(AnimationUINext.Client);
+  return Var=Runtime.Safe(Next.Var);
  });
  Runtime.OnLoad(function()
  {
-  Client.Main();
+  Client.rvTest();
+  Client.rvShow();
+  Client.main();
+  Client.btns();
+  Client.animation();
+  Client.anim1();
   return;
  });
 }());
