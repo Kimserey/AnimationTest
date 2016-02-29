@@ -17105,21 +17105,25 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
 ;
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Client,Button,UI,Next,Var,State,List,AttrProxy,AttrModule,Var1,View,Doc,PrintfHelpers,T,View1,Number,Colors,Selection,Content,Interpolation1,Easing,An,Trans,Trans1;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,UI,Next,Var,AnimationUINext,Client,State,Button,List,AttrModule,View,Var1,Doc,AttrProxy,PrintfHelpers,T,View1,Number,Colors,Selection,Content,Interpolation1,Easing,An,Trans,Trans1;
  Runtime.Define(Global,{
   AnimationUINext:{
    Client:{
     Button:Runtime.Class({},{
      create:function()
      {
+      var OnClick,State1;
+      OnClick=function()
+      {
+      };
+      State1=Var.Create(State.create());
       return Runtime.New(Button,{
        Title:"",
        Icon:"",
        HexColor:"",
-       OnClick:function()
-       {
-       },
-       State:Var.Create(State.create())
+       OnClick:OnClick,
+       SelectedClass:"",
+       State:State1
       });
      },
      onClick:function(action,x)
@@ -17129,12 +17133,13 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        Icon:x.Icon,
        HexColor:x.HexColor,
        OnClick:action,
+       SelectedClass:x.SelectedClass,
        State:x.State
       });
      },
      render:function(x)
      {
-      var left,top,opacity,rvHover,ats,arg10,arg101,arg102;
+      var left,top,opacity,rvHover,ats,arg00,arg10,arg20,arg101,arg102,arg103;
       left=function(state)
       {
        return state.Position.Left*300;
@@ -17148,10 +17153,19 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        return state.Opacity;
       };
       rvHover=Var.Create(false);
-      arg10=x.State.get_View();
+      arg00=function(h)
+      {
+       return function(s)
+       {
+        return(h?true:s.IsSelected)?"menu-button "+x.SelectedClass:"menu-button";
+       };
+      };
+      arg10=rvHover.get_View();
+      arg20=x.State.get_View();
       arg101=x.State.get_View();
       arg102=x.State.get_View();
-      ats=List.ofArray([AttrProxy.Create("class","menu-button"),AttrModule.Handler("click",function()
+      arg103=x.State.get_View();
+      ats=List.ofArray([AttrModule.Dynamic("class",View.Map2(arg00,arg10,arg20)),AttrModule.Handler("click",function()
       {
        return function()
        {
@@ -17169,13 +17183,13 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        {
         return Var1.Set(rvHover,false);
        };
-      }),AttrModule.AnimatedStyle("opacity",Client.transition(1),View.Map(opacity,arg10),function(_)
+      }),AttrModule.AnimatedStyle("opacity",Client.transition(1),View.Map(opacity,arg101),function(_)
       {
        return _.toFixed(6);
-      }),AttrModule.AnimatedStyle("left",Client.transition(0),View.Map(left,arg101),function(_)
+      }),AttrModule.AnimatedStyle("left",Client.transition(0),View.Map(left,arg102),function(_)
       {
        return _.toFixed(6)+"px";
-      }),AttrModule.AnimatedStyle("top",Client.transition(0),View.Map(top,arg102),function(_)
+      }),AttrModule.AnimatedStyle("top",Client.transition(0),View.Map(top,arg103),function(_)
       {
        return _.toFixed(6)+"px";
       })]);
@@ -17190,6 +17204,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        Icon:x.Icon,
        HexColor:color,
        OnClick:x.OnClick,
+       SelectedClass:x.SelectedClass,
        State:x.State
       });
      },
@@ -17200,6 +17215,18 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        Icon:icon,
        HexColor:x.HexColor,
        OnClick:x.OnClick,
+       SelectedClass:x.SelectedClass,
+       State:x.State
+      });
+     },
+     setSelectedClass:function(cls,x)
+     {
+      return Runtime.New(Button,{
+       Title:x.Title,
+       Icon:x.Icon,
+       HexColor:x.HexColor,
+       OnClick:x.OnClick,
+       SelectedClass:cls,
        State:x.State
       });
      },
@@ -17210,6 +17237,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        Icon:x.Icon,
        HexColor:x.HexColor,
        OnClick:x.OnClick,
+       SelectedClass:x.SelectedClass,
        State:state
       });
      },
@@ -17220,6 +17248,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
        Icon:x.Icon,
        HexColor:x.HexColor,
        OnClick:x.OnClick,
+       SelectedClass:x.SelectedClass,
        State:x.State
       });
      }
@@ -17661,21 +17690,23 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     }),
     accessoriesBtn:Runtime.Field(function()
     {
-     var arg10,arg101,x,arg00;
+     var arg10,arg101,x,arg00,x1;
      arg10=Button.create();
      arg101=Button.setIcon("fa-keyboard-o",arg10);
      x=Button.setTitle("Accessories",arg101);
      arg00=Colors.grey();
-     return Button.setColor(arg00,x);
+     x1=Button.setColor(arg00,x);
+     return Button.setSelectedClass("menu-button-is-selected-grey",x1);
     }),
     laptopBtn:Runtime.Field(function()
     {
-     var arg10,arg101,x,arg00;
+     var arg10,arg101,x,arg00,x1;
      arg10=Button.create();
      arg101=Button.setIcon("fa-laptop",arg10);
      x=Button.setTitle("Laptops",arg101);
      arg00=Colors.blue();
-     return Button.setColor(arg00,x);
+     x1=Button.setColor(arg00,x);
+     return Button.setSelectedClass("menu-button-is-selected-blue",x1);
     }),
     main:Runtime.Field(function()
     {
@@ -17709,12 +17740,13 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     }),
     mobileBtn:Runtime.Field(function()
     {
-     var arg10,arg101,x,arg00;
+     var arg10,arg101,x,arg00,x1;
      arg10=Button.create();
      arg101=Button.setIcon("fa-mobile",arg10);
      x=Button.setTitle("Mobile phones",arg101);
      arg00=Colors.green();
-     return Button.setColor(arg00,x);
+     x1=Button.setColor(arg00,x);
+     return Button.setSelectedClass("menu-button-is-selected-green",x1);
     }),
     op_LessMultiplyGreater:function(f,m)
     {
@@ -17722,12 +17754,13 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     },
     tabletBtn:Runtime.Field(function()
     {
-     var arg10,arg101,x,arg00;
+     var arg10,arg101,x,arg00,x1;
      arg10=Button.create();
      arg101=Button.setIcon("fa-tablet",arg10);
      x=Button.setTitle("Tablets",arg101);
      arg00=Colors.red();
-     return Button.setColor(arg00,x);
+     x1=Button.setColor(arg00,x);
+     return Button.setSelectedClass("menu-button-is-selected-red",x1);
     }),
     transition:function(initial)
     {
@@ -17764,19 +17797,19 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
  });
  Runtime.OnInit(function()
  {
-  AnimationUINext=Runtime.Safe(Global.AnimationUINext);
-  Client=Runtime.Safe(AnimationUINext.Client);
-  Button=Runtime.Safe(Client.Button);
   UI=Runtime.Safe(Global.WebSharper.UI);
   Next=Runtime.Safe(UI.Next);
   Var=Runtime.Safe(Next.Var);
+  AnimationUINext=Runtime.Safe(Global.AnimationUINext);
+  Client=Runtime.Safe(AnimationUINext.Client);
   State=Runtime.Safe(Client.State);
+  Button=Runtime.Safe(Client.Button);
   List=Runtime.Safe(Global.WebSharper.List);
-  AttrProxy=Runtime.Safe(Next.AttrProxy);
   AttrModule=Runtime.Safe(Next.AttrModule);
-  Var1=Runtime.Safe(Next.Var1);
   View=Runtime.Safe(Next.View);
+  Var1=Runtime.Safe(Next.Var1);
   Doc=Runtime.Safe(Next.Doc);
+  AttrProxy=Runtime.Safe(Next.AttrProxy);
   PrintfHelpers=Runtime.Safe(Global.WebSharper.PrintfHelpers);
   T=Runtime.Safe(List.T);
   View1=Runtime.Safe(Next.View1);

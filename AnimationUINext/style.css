@@ -1,6 +1,7 @@
 ﻿body {
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
+	padding: 30px;
 }
 
 .fa-2x {
@@ -17,16 +18,35 @@
 }
 	.menu-button {
 		position: relative; 
-    	z-index: 1;
    		top: 0; 
     	left: 0; 
    		width: 300px;
 		background-color: #F4F4F4;
+		cursor: pointer;
 	}
-	
+
+	.menu-button-is-selected-green {
+		background-color: #689F38;
+		color: white;
+	}
+
+	.menu-button-is-selected-red {
+		background-color: #ED3B3B;
+		color: white;
+	}
+
+	.menu-button-is-selected-blue {
+		background-color: #039BE5;
+		color: white;
+	}
+
+	.menu-button-is-selected-grey {
+		background-color: #658092;
+		color: white;
+	}
+
 	.menu-button:hover {
 		color: white;
-		cursor: pointer;
 	}
 		.menu-button-icon {
 			display: inline-block;

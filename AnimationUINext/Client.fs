@@ -62,21 +62,24 @@ module Client =
         Icon: string
         HexColor: string
         OnClick: unit -> unit
+        SelectedClass: string
         State: Var<State>
     } with
-        static member create() = { Title = ""; Icon = ""; HexColor = ""; OnClick = ignore; State = Var.Create (State.create()) }
+        static member create() = { Title = ""; Icon = ""; HexColor = ""; OnClick = ignore; State = Var.Create (State.create()); SelectedClass = "" }
         static member setTitle title x = { x with Title = title }
         static member setIcon icon x = { x with Icon = icon }
         static member setColor color x = { x with HexColor = color } 
         static member setState state x = { x with State = state }
         static member onClick action x = { x with OnClick = action }
+        static member setSelectedClass cls x = { x with SelectedClass = cls }
         static member render x =
             let left (state: State) = state.Position.Left * 300.
             let top (state: State)  = state.Position.Top * 48.
             let opacity (state: State) = state.Opacity
             let rvHover = Var.Create false
 
-            divAttr [ attr.``class`` "menu-button"
+            divAttr [ attr.classDyn ((rvHover.View, x.State.View) 
+                                     ||> View.Map2 (fun h s -> if h || s.IsSelected then "menu-button " + x.SelectedClass else "menu-button"))
                       on.click (fun _ _ -> x.OnClick())
                       on.mouseOver(fun _ _ -> Var.Set rvHover true)
                       on.mouseOut (fun _ _ -> Var.Set rvHover false)
@@ -94,24 +97,28 @@ module Client =
         |> Button.setIcon "fa-mobile" 
         |> Button.setTitle "Mobile phones" 
         |> Button.setColor Colors.green
+        |> Button.setSelectedClass "menu-button-is-selected-green"
 
     let tabletBtn =
         Button.create()
         |> Button.setIcon "fa-tablet"
         |> Button.setTitle "Tablets"
         |> Button.setColor Colors.red
+        |> Button.setSelectedClass "menu-button-is-selected-red"
 
     let laptopBtn =
         Button.create()
         |> Button.setIcon "fa-laptop"
         |> Button.setTitle "Laptops"
         |> Button.setColor Colors.blue
+        |> Button.setSelectedClass "menu-button-is-selected-blue"
 
     let accessoriesBtn =
         Button.create()
         |> Button.setIcon "fa-keyboard-o"
         |> Button.setTitle "Accessories"
         |> Button.setColor Colors.grey
+        |> Button.setSelectedClass "menu-button-is-selected-grey"
 
     module Selection =
         let mobile() =
