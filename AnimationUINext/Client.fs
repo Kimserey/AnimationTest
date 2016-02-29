@@ -7,101 +7,230 @@ open WebSharper.UI.Next
 open WebSharper.UI.Next.Html
 open WebSharper.UI.Next.Client
 
-[<AutoOpen; JavaScript>]
-module Animation =
-    let anim time = 
-        Anim.Simple Interpolation.Double Easing.CubicInOut time
-
-    type Fade = {
-        In: bool
-        Out: bool
-        TimeInMs: double
-    } with
-        static member fadesIn x ms = { In = true; Out = false; TimeInMs = ms }
-        static member fadesOut x ms = { In = false; Out = true; TimeInMs = ms }
-        static member fadesInAndOut x ms = { In = true; Out = true; TimeInMs = ms }
-        static member create x =
-            let anim = anim x.TimeInMs
-            let transition =
-                Trans.Create anim
-                |> (if x.In then Trans.Enter (fun x -> anim 0. x) else id)
-                |> (if x.Out then Trans.Exit (fun x -> anim x 0.) else id)
-            Attr.AnimatedStyle "opacity" transition (View.Const 1.) string   
-
-    type Slide = {
-        Direction: SlideDirection
-        Initial: double
-        SlideBy: double
-        TimeInMs: double 
-    }
-    with
-        static member Default = 
-            { Direction = Up
-              Initial = 0.
-              SlideBy = 0.
-              TimeInMs = 0. }
-        static member takesDirection  dir x = { x with Direction = dir }
-        static member startsAtPixels px x = { x with Initial = px }
-        static member slidesByPixels px x = { x with SlideBy = px }
-        static member lastsForInMs    ms (x: Slide) = { x with TimeInMs = ms }
-        static member create x =
-            let (style, animation, final) = 
-                match x.Direction with 
-                | Up    -> 
-                    let value = x.Initial - x.SlideBy
-                    "top", anim x.TimeInMs x.Initial value, value
-
-                | Down  -> 
-                    let value = x.Initial + x.SlideBy
-                    "top", anim x.TimeInMs x.Initial value, value
-
-                | Left  -> 
-                    let value = x.Initial - x.SlideBy
-                    "left", anim x.TimeInMs x.Initial value, value
-
-                | Right -> 
-                    let value = x.Initial + x.SlideBy
-                    "left", anim x.TimeInMs x.Initial value, value
-
-            Attr.AnimatedStyle style (Trans.Create (anim x.TimeInMs) 
-            |> Trans.Enter (fun _ -> animation)) (View.Const final) (sprintf "%Apx")
-
-    and SlideDirection = Up | Down | Left | Right
-
-
 [<JavaScript>]
 module Client =
 
-    let rvTest = Var.Create 5
-    let rvShow = Var.Create true
+    let (<*>) f m = m |> View.Apply f
+    
+    module Colors =
+        let green = "#689F38"
+        let red   = "#ED3B3B"
+        let blue  = "#039BE5"
+        let grey  = "#658092"
 
-    let btns =
-        [ div [ text "hide"
-                Doc.CheckBox [] rvShow :> Doc ]
-          Doc.IntInputUnchecked [] rvTest ]
-        |> Seq.cast
-
-    /// anim represents the value being animated over the duration
-    let anim1 =
-        Anim.Simple Interpolation.Double Easing.CubicInOut 750.
-
-    let animation =
+    let transition initial =
+        let anim time = Anim.Simple Interpolation.Double Easing.CubicInOut time
         Trans.Trivial()
-        |> Trans.Change anim1
-        |> Trans.Enter (fun x -> anim1 0. x)
-        |> Trans.Exit (fun x -> anim1 x 0.)
+        |> Trans.Change (anim 350.)
+        |> Trans.Enter (fun v -> anim 200. initial v)
+        |> Trans.Exit (fun v -> anim 200. v initial)
 
-    /// a transition is used to describe what to do with the animated value
+    type State = {
+        Opacity: double
+        Position: Position
+        IsSelected: bool
+    } with
+        static member hide x =
+            { x with Opacity = 0. }
+        static member show x =
+            { x with Opacity = 1. }
+        static member moveUp x =
+            { x with Position = { x.Position with Top = x.Position.Top - 1. } }
+        static member moveUpN n x =
+            { x with Position = { x.Position with Top = x.Position.Top - (float n * 1.) } }
+        static member moveDown x =
+            { x with Position = { x.Position with Top = x.Position.Top + 1. } }
+        static member moveDownN n x =
+            { x with Position = { x.Position with Top = x.Position.Top + (float n * 1.) } }
+        static member moveLeft x =
+            { x with Position = { x.Position with Left = x.Position.Left - 1. } }
+        static member moveRight x =
+            { x with Position = { x.Position with Left = x.Position.Left + 1. } }
+        static member select x =
+            { x with IsSelected = true }
+        static member unselect x =
+            { x with IsSelected = false }
+        static member create() =
+            { Opacity = 1.; Position =  { Top = 0.; Left = 0. }; IsSelected = false }
+    and Position = {
+        Top: double
+        Left: double
+    }
+
+    type Button = {
+        Title: string
+        Icon: string
+        HexColor: string
+        OnClick: unit -> unit
+        State: Var<State>
+    } with
+        static member create() = { Title = ""; Icon = ""; HexColor = ""; OnClick = ignore; State = Var.Create (State.create()) }
+        static member setTitle title x = { x with Title = title }
+        static member setIcon icon x = { x with Icon = icon }
+        static member setColor color x = { x with HexColor = color } 
+        static member setState state x = { x with State = state }
+        static member onClick action x = { x with OnClick = action }
+        static member render x =
+            let left (state: State) = state.Position.Left * 300.
+            let top (state: State)  = state.Position.Top * 48.
+            let opacity (state: State) = state.Opacity
+            let rvHover = Var.Create false
+
+            divAttr [ attr.``class`` "menu-button"
+                      on.click (fun _ _ -> x.OnClick())
+                      on.mouseOver(fun _ _ -> Var.Set rvHover true)
+                      on.mouseOut (fun _ _ -> Var.Set rvHover false)
+                      Attr.AnimatedStyle "opacity" (transition 1.) (View.Map opacity x.State.View) (sprintf "%f")
+                      Attr.AnimatedStyle "left"    (transition 0.) (View.Map left    x.State.View) (sprintf "%fpx")
+                      Attr.AnimatedStyle "top"     (transition 0.) (View.Map top     x.State.View) (sprintf "%fpx") ]
+                    [ divAttr [ attr.style (sprintf "background-color:%s;" x.HexColor)
+                                attr.``class`` "menu-button-icon" ]
+                              [ iAttr [ attr.``class`` (sprintf "fa %s fa-2x fa-fw" x.Icon) ] [] ]
+                      divAttr [ attr.``class`` "menu-button-text" ] 
+                              [ text x.Title ] ]
+
+    let mobileBtn =
+        Button.create()
+        |> Button.setIcon "fa-mobile" 
+        |> Button.setTitle "Mobile phones" 
+        |> Button.setColor Colors.green
+
+    let tabletBtn =
+        Button.create()
+        |> Button.setIcon "fa-tablet"
+        |> Button.setTitle "Tablets"
+        |> Button.setColor Colors.red
+
+    let laptopBtn =
+        Button.create()
+        |> Button.setIcon "fa-laptop"
+        |> Button.setTitle "Laptops"
+        |> Button.setColor Colors.blue
+
+    let accessoriesBtn =
+        Button.create()
+        |> Button.setIcon "fa-keyboard-o"
+        |> Button.setTitle "Accessories"
+        |> Button.setColor Colors.grey
+
+    module Selection =
+        let mobile() =
+            if not mobileBtn.State.Value.IsSelected then
+                Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.select)
+                Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.moveLeft |> State.hide)
+        
+        let tablet() =
+            if not tabletBtn.State.Value.IsSelected then
+                Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.select |> State.moveUp)
+                Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.moveLeft |> State.hide)
+
+        let laptop() =
+            if not laptopBtn.State.Value.IsSelected then
+                Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.select |> State.moveUpN 2)
+                Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.moveLeft |> State.hide)
+
+        let accessories() =
+            if not accessoriesBtn.State.Value.IsSelected then
+                Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.moveLeft |> State.hide)
+                Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.select |> State.moveUpN 3)
+    
+    module Content =
+        let mobile =
+            divAttr [ attr.``class`` "menu-content"
+                      Attr.AnimatedStyle "opacity" (transition 0.) (View.Const 1.) (sprintf "%f") ] 
+                    [ divAttr [ attr.``class`` "menu-content-back"
+                                on.click (fun _ _ ->
+                                    Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.unselect)
+                                    Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.moveRight |> State.show)) ]
+                              [ text "‹" ]
+                      divAttr [ attr.``class`` "menu-content-links" ] 
+                              [ div [ text "Sim free" ]
+                                div [ text "Iphone" ]
+                                div [ text "Samsung" ] ] ]
+
+        let tablet =
+            divAttr [ attr.``class`` "menu-content"
+                      Attr.AnimatedStyle "opacity" (transition 0.) (View.Const 1.) (sprintf "%f") ] 
+                    [ divAttr [ attr.``class`` "menu-content-back"
+                                on.click (fun _ _ ->
+                                    Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.unselect  |> State.moveDown)
+                                    Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.moveRight |> State.show)) ]
+                          [ text "‹" ]
+                      divAttr [ attr.``class`` "menu-content-links" ] 
+                              [ div [ text "Ipad" ]
+                                div [ text "Samsung Galaxy tab" ]
+                                div [ text "Android" ] ] ]
+
+        let laptop =
+            divAttr [ attr.``class`` "menu-content"
+                      Attr.AnimatedStyle "opacity" (transition 0.) (View.Const 1.) (sprintf "%f") ] 
+                    [ divAttr [ attr.``class`` "menu-content-back"
+                                on.click (fun _ _ ->
+                                    Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.unselect  |> State.moveDownN 2)
+                                    Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.moveRight |> State.show)) ]
+                              [ text "‹" ]
+                      divAttr [ attr.``class`` "menu-content-links" ] 
+                              [ div [ text "Macbook pro" ]
+                                div [ text "Macbook pro retina" ]
+                                div [ text "Lenovo" ] ] ]
+
+        let accessories =
+            divAttr [ attr.``class`` "menu-content"
+                      Attr.AnimatedStyle "opacity" (transition 0.) (View.Const 1.) (sprintf "%f") ] 
+                    [ divAttr [ attr.``class`` "menu-content-back"
+                                on.click (fun _ _ ->
+                                    Var.Set mobileBtn.State       (mobileBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set tabletBtn.State       (tabletBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set laptopBtn.State       (laptopBtn.State.Value |> State.moveRight |> State.show)
+                                    Var.Set accessoriesBtn.State  (accessoriesBtn.State.Value |> State.unselect  |> State.moveDownN 3)) ]
+                              [ text "‹" ]
+                      divAttr [ attr.``class`` "menu-content-links" ] 
+                              [ div [ text "Keyboards" ]
+                                div [ text "Mice" ]
+                                div [ text "Headphones" ] ] ]
+
+                                    
     let main =
-        [ rvShow.View
-          |> View.Map (function
-            | true -> divAttr [ attr.style "float: left;"
-                                Attr.AnimatedStyle "opacity" animation (View.Const 1.) string
-                                Attr.AnimatedStyle "transform" animation (View.Map double rvTest.View) (sprintf "translateY(%fem)") ]
-                              [ h1Attr [ attr.style "width: 160px;" ] 
-                                       [ text "hello world" ] ] :> Doc
-            | false -> Doc.Empty)
-          |> Doc.EmbedView
-          divAttr [ attr.style "float: right;" ] btns :> Doc ]
-        |> Doc.Concat
+        divAttr [ attr.``class`` "menu" ]
+                [ mobileBtn
+                  |> Button.onClick Selection.mobile
+                  |> Button.render
+
+                  tabletBtn
+                  |> Button.onClick Selection.tablet
+                  |> Button.render
+
+                  laptopBtn
+                  |> Button.onClick Selection.laptop
+                  |> Button.render
+
+                  accessoriesBtn
+                  |> Button.onClick Selection.accessories
+                  |> Button.render 
+
+                  View.Const(fun (sm: State) (st: State) (sl: State) (sa:State) -> 
+                    if sm.IsSelected      then Content.mobile :> Doc
+                    else if st.IsSelected then Content.tablet :> Doc
+                    else if sl.IsSelected then Content.laptop :> Doc
+                    else if sa.IsSelected then Content.accessories :> Doc
+                    else Doc.Empty)
+                  <*> mobileBtn.State.View
+                  <*> tabletBtn.State.View
+                  <*> laptopBtn.State.View
+                  <*> accessoriesBtn.State.View
+                  |> Doc.EmbedView ]
         |> Doc.RunById "main"

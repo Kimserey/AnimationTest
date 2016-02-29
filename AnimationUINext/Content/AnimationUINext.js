@@ -17105,294 +17105,706 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
 ;
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Animation,UI,Next,Trans,Trans1,AttrModule,View1,Fade,PrintfHelpers,Slide,Interpolation1,Easing,An,Client,List,Doc,T,View,AttrProxy,Var;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,AnimationUINext,Client,Button,UI,Next,Var,State,List,AttrProxy,AttrModule,Var1,View,Doc,PrintfHelpers,T,View1,Number,Colors,Selection,Content,Interpolation1,Easing,An,Trans,Trans1;
  Runtime.Define(Global,{
   AnimationUINext:{
-   Animation:{
-    Fade:Runtime.Class({},{
-     create:function(x)
-     {
-      var anim,x1,x2,_,arg00,transition,_1,arg001;
-      anim=Animation.anim(x.TimeInMs);
-      x1=Trans.Create(anim);
-      if(x.In)
-       {
-        arg00=function()
-        {
-         return(anim(0))(1);
-        };
-        _=function(arg10)
-        {
-         return Trans1.Enter(arg00,arg10);
-        };
-       }
-      else
-       {
-        _=function(x3)
-        {
-         return x3;
-        };
-       }
-      x2=_(x1);
-      if(x.Out)
-       {
-        arg001=function()
-        {
-         return(anim(1))(0);
-        };
-        _1=function(arg10)
-        {
-         return Trans1.Exit(arg001,arg10);
-        };
-       }
-      else
-       {
-        _1=function(x3)
-        {
-         return x3;
-        };
-       }
-      transition=_1(x2);
-      return AttrModule.AnimatedStyle("opacity",transition,View1.Const(1),function(value)
-      {
-       return Global.String(value);
-      });
-     },
-     fadesIn:function(x,ms)
-     {
-      return Runtime.New(Fade,{
-       In:true,
-       Out:false,
-       TimeInMs:ms
-      });
-     },
-     fadesInAndOut:function(x,ms)
-     {
-      return Runtime.New(Fade,{
-       In:true,
-       Out:true,
-       TimeInMs:ms
-      });
-     },
-     fadesOut:function(x,ms)
-     {
-      return Runtime.New(Fade,{
-       In:false,
-       Out:true,
-       TimeInMs:ms
-      });
-     }
-    }),
-    Slide:Runtime.Class({},{
-     create:function(x)
-     {
-      var matchValue,patternInput,_,value,value1,value2,value3,style,_final,animation,arg00,arg10;
-      matchValue=x.Direction;
-      if(matchValue.$==1)
-       {
-        value=x.Initial+x.SlideBy;
-        _=["top",((Animation.anim(x.TimeInMs))(x.Initial))(value),value];
-       }
-      else
-       {
-        if(matchValue.$==2)
-         {
-          value1=x.Initial-x.SlideBy;
-          _=["left",((Animation.anim(x.TimeInMs))(x.Initial))(value1),value1];
-         }
-        else
-         {
-          if(matchValue.$==3)
-           {
-            value2=x.Initial+x.SlideBy;
-            _=["left",((Animation.anim(x.TimeInMs))(x.Initial))(value2),value2];
-           }
-          else
-           {
-            value3=x.Initial-x.SlideBy;
-            _=["top",((Animation.anim(x.TimeInMs))(x.Initial))(value3),value3];
-           }
-         }
-       }
-      patternInput=_;
-      style=patternInput[0];
-      _final=patternInput[2];
-      animation=patternInput[1];
-      arg00=function()
-      {
-       return animation;
-      };
-      arg10=Trans.Create(Animation.anim(x.TimeInMs));
-      return AttrModule.AnimatedStyle(style,Trans1.Enter(arg00,arg10),View1.Const(_final),function(_1)
-      {
-       return PrintfHelpers.prettyPrint(_1)+"px";
-      });
-     },
-     get_Default:function()
-     {
-      return Runtime.New(Slide,{
-       Direction:{
-        $:0
-       },
-       Initial:0,
-       SlideBy:0,
-       TimeInMs:0
-      });
-     },
-     lastsForInMs:function(ms,x)
-     {
-      return Runtime.New(Slide,{
-       Direction:x.Direction,
-       Initial:x.Initial,
-       SlideBy:x.SlideBy,
-       TimeInMs:ms
-      });
-     },
-     slidesByPixels:function(px,x)
-     {
-      return Runtime.New(Slide,{
-       Direction:x.Direction,
-       Initial:x.Initial,
-       SlideBy:px,
-       TimeInMs:x.TimeInMs
-      });
-     },
-     startsAtPixels:function(px,x)
-     {
-      return Runtime.New(Slide,{
-       Direction:x.Direction,
-       Initial:px,
-       SlideBy:x.SlideBy,
-       TimeInMs:x.TimeInMs
-      });
-     },
-     takesDirection:function(dir,x)
-     {
-      return Runtime.New(Slide,{
-       Direction:dir,
-       Initial:x.Initial,
-       SlideBy:x.SlideBy,
-       TimeInMs:x.TimeInMs
-      });
-     }
-    }),
-    anim:function(time)
-    {
-     var arg00,arg10;
-     arg00=Interpolation1.get_Double();
-     arg10=Easing.get_CubicInOut();
-     return function(arg30)
-     {
-      return function(arg40)
-      {
-       return An.Simple(arg00,arg10,time,arg30,arg40);
-      };
-     };
-    }
-   },
    Client:{
-    anim1:Runtime.Field(function()
-    {
-     var arg00,arg10;
-     arg00=Interpolation1.get_Double();
-     arg10=Easing.get_CubicInOut();
-     return function(arg30)
+    Button:Runtime.Class({},{
+     create:function()
      {
-      return function(arg40)
+      return Runtime.New(Button,{
+       Title:"",
+       Icon:"",
+       HexColor:"",
+       OnClick:function()
+       {
+       },
+       State:Var.Create(State.create())
+      });
+     },
+     onClick:function(action,x)
+     {
+      return Runtime.New(Button,{
+       Title:x.Title,
+       Icon:x.Icon,
+       HexColor:x.HexColor,
+       OnClick:action,
+       State:x.State
+      });
+     },
+     render:function(x)
+     {
+      var left,top,opacity,rvHover,ats,arg10,arg101,arg102;
+      left=function(state)
       {
-       return An.Simple(arg00,arg10,750,arg30,arg40);
+       return state.Position.Left*300;
       };
-     };
-    }),
-    animation:Runtime.Field(function()
-    {
-     var x,arg00,arg001,arg10,x2,arg002;
-     x=Trans.Trivial();
-     arg00=Client.anim1();
-     arg001=function(x1)
+      top=function(state)
+      {
+       return state.Position.Top*48;
+      };
+      opacity=function(state)
+      {
+       return state.Opacity;
+      };
+      rvHover=Var.Create(false);
+      arg10=x.State.get_View();
+      arg101=x.State.get_View();
+      arg102=x.State.get_View();
+      ats=List.ofArray([AttrProxy.Create("class","menu-button"),AttrModule.Handler("click",function()
+      {
+       return function()
+       {
+        return x.OnClick.call(null,null);
+       };
+      }),AttrModule.Handler("mouseover",function()
+      {
+       return function()
+       {
+        return Var1.Set(rvHover,true);
+       };
+      }),AttrModule.Handler("mouseout",function()
+      {
+       return function()
+       {
+        return Var1.Set(rvHover,false);
+       };
+      }),AttrModule.AnimatedStyle("opacity",Client.transition(1),View.Map(opacity,arg10),function(_)
+      {
+       return _.toFixed(6);
+      }),AttrModule.AnimatedStyle("left",Client.transition(0),View.Map(left,arg101),function(_)
+      {
+       return _.toFixed(6)+"px";
+      }),AttrModule.AnimatedStyle("top",Client.transition(0),View.Map(top,arg102),function(_)
+      {
+       return _.toFixed(6)+"px";
+      })]);
+      return Doc.Element("div",ats,List.ofArray([Doc.Element("div",List.ofArray([AttrProxy.Create("style","background-color:"+PrintfHelpers.toSafe(x.HexColor)+";"),AttrProxy.Create("class","menu-button-icon")]),List.ofArray([Doc.Element("i",List.ofArray([AttrProxy.Create("class","fa "+PrintfHelpers.toSafe(x.Icon)+" fa-2x fa-fw")]),Runtime.New(T,{
+       $:0
+      }))])),Doc.Element("div",List.ofArray([AttrProxy.Create("class","menu-button-text")]),List.ofArray([Doc.TextNode(x.Title)]))]));
+     },
+     setColor:function(color,x)
      {
-      return((Client.anim1())(0))(x1);
-     };
-     arg10=Trans1.Change(arg00,x);
-     x2=Trans1.Enter(arg001,arg10);
-     arg002=function(x1)
+      return Runtime.New(Button,{
+       Title:x.Title,
+       Icon:x.Icon,
+       HexColor:color,
+       OnClick:x.OnClick,
+       State:x.State
+      });
+     },
+     setIcon:function(icon,x)
      {
-      return((Client.anim1())(x1))(0);
-     };
-     return Trans1.Exit(arg002,x2);
+      return Runtime.New(Button,{
+       Title:x.Title,
+       Icon:icon,
+       HexColor:x.HexColor,
+       OnClick:x.OnClick,
+       State:x.State
+      });
+     },
+     setState:function(state,x)
+     {
+      return Runtime.New(Button,{
+       Title:x.Title,
+       Icon:x.Icon,
+       HexColor:x.HexColor,
+       OnClick:x.OnClick,
+       State:state
+      });
+     },
+     setTitle:function(title,x)
+     {
+      return Runtime.New(Button,{
+       Title:title,
+       Icon:x.Icon,
+       HexColor:x.HexColor,
+       OnClick:x.OnClick,
+       State:x.State
+      });
+     }
     }),
-    btns:Runtime.Field(function()
+    Colors:{
+     blue:Runtime.Field(function()
+     {
+      return"#039BE5";
+     }),
+     green:Runtime.Field(function()
+     {
+      return"#689F38";
+     }),
+     grey:Runtime.Field(function()
+     {
+      return"#658092";
+     }),
+     red:Runtime.Field(function()
+     {
+      return"#ED3B3B";
+     })
+    },
+    Content:{
+     accessories:Runtime.Field(function()
+     {
+      var ats,ats1,arg20,arg201,arg202;
+      ats=List.ofArray([AttrProxy.Create("class","menu-content"),AttrModule.AnimatedStyle("opacity",Client.transition(0),View1.Const(1),function(_)
+      {
+       return _.toFixed(6);
+      })]);
+      ats1=List.ofArray([AttrProxy.Create("class","menu-content-links")]);
+      arg20=List.ofArray([Doc.TextNode("Keyboards")]);
+      arg201=List.ofArray([Doc.TextNode("Mice")]);
+      arg202=List.ofArray([Doc.TextNode("Headphones")]);
+      return Doc.Element("div",ats,List.ofArray([Doc.Element("div",List.ofArray([AttrProxy.Create("class","menu-content-back"),AttrModule.Handler("click",function()
+      {
+       return function()
+       {
+        var arg00,arg001,arg002,arg10,arg003,arg004,arg005,arg101,arg006,arg007,arg008,arg102,arg009,arg00a,arg103,arg104;
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg002=State.moveRight(arg001);
+        arg10=State.show(arg002);
+        Var1.Set(arg00,arg10);
+        arg003=Client.tabletBtn().State;
+        arg004=Var1.Get(Client.tabletBtn().State);
+        arg005=State.moveRight(arg004);
+        arg101=State.show(arg005);
+        Var1.Set(arg003,arg101);
+        arg006=Client.laptopBtn().State;
+        arg007=Var1.Get(Client.laptopBtn().State);
+        arg008=State.moveRight(arg007);
+        arg102=State.show(arg008);
+        Var1.Set(arg006,arg102);
+        arg009=Client.accessoriesBtn().State;
+        arg00a=Var1.Get(Client.accessoriesBtn().State);
+        arg103=State.unselect(arg00a);
+        arg104=State.moveDownN(3,arg103);
+        return Var1.Set(arg009,arg104);
+       };
+      })]),List.ofArray([Doc.TextNode("\u2039")])),Doc.Element("div",ats1,List.ofArray([Doc.Element("div",[],arg20),Doc.Element("div",[],arg201),Doc.Element("div",[],arg202)]))]));
+     }),
+     laptop:Runtime.Field(function()
+     {
+      var ats,ats1,arg20,arg201,arg202;
+      ats=List.ofArray([AttrProxy.Create("class","menu-content"),AttrModule.AnimatedStyle("opacity",Client.transition(0),View1.Const(1),function(_)
+      {
+       return _.toFixed(6);
+      })]);
+      ats1=List.ofArray([AttrProxy.Create("class","menu-content-links")]);
+      arg20=List.ofArray([Doc.TextNode("Macbook pro")]);
+      arg201=List.ofArray([Doc.TextNode("Macbook pro retina")]);
+      arg202=List.ofArray([Doc.TextNode("Lenovo")]);
+      return Doc.Element("div",ats,List.ofArray([Doc.Element("div",List.ofArray([AttrProxy.Create("class","menu-content-back"),AttrModule.Handler("click",function()
+      {
+       return function()
+       {
+        var arg00,arg001,arg002,arg10,arg003,arg004,arg005,arg101,arg006,arg007,arg102,arg103,arg008,arg009,arg00a,arg104;
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg002=State.moveRight(arg001);
+        arg10=State.show(arg002);
+        Var1.Set(arg00,arg10);
+        arg003=Client.tabletBtn().State;
+        arg004=Var1.Get(Client.tabletBtn().State);
+        arg005=State.moveRight(arg004);
+        arg101=State.show(arg005);
+        Var1.Set(arg003,arg101);
+        arg006=Client.laptopBtn().State;
+        arg007=Var1.Get(Client.laptopBtn().State);
+        arg102=State.unselect(arg007);
+        arg103=State.moveDownN(2,arg102);
+        Var1.Set(arg006,arg103);
+        arg008=Client.accessoriesBtn().State;
+        arg009=Var1.Get(Client.accessoriesBtn().State);
+        arg00a=State.moveRight(arg009);
+        arg104=State.show(arg00a);
+        return Var1.Set(arg008,arg104);
+       };
+      })]),List.ofArray([Doc.TextNode("\u2039")])),Doc.Element("div",ats1,List.ofArray([Doc.Element("div",[],arg20),Doc.Element("div",[],arg201),Doc.Element("div",[],arg202)]))]));
+     }),
+     mobile:Runtime.Field(function()
+     {
+      var ats,ats1,arg20,arg201,arg202;
+      ats=List.ofArray([AttrProxy.Create("class","menu-content"),AttrModule.AnimatedStyle("opacity",Client.transition(0),View1.Const(1),function(_)
+      {
+       return _.toFixed(6);
+      })]);
+      ats1=List.ofArray([AttrProxy.Create("class","menu-content-links")]);
+      arg20=List.ofArray([Doc.TextNode("Sim free")]);
+      arg201=List.ofArray([Doc.TextNode("Iphone")]);
+      arg202=List.ofArray([Doc.TextNode("Samsung")]);
+      return Doc.Element("div",ats,List.ofArray([Doc.Element("div",List.ofArray([AttrProxy.Create("class","menu-content-back"),AttrModule.Handler("click",function()
+      {
+       return function()
+       {
+        var arg00,arg001,arg10,arg002,arg003,arg004,arg101,arg005,arg006,arg007,arg102,arg008,arg009,arg00a,arg103;
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg10=State.unselect(arg001);
+        Var1.Set(arg00,arg10);
+        arg002=Client.tabletBtn().State;
+        arg003=Var1.Get(Client.tabletBtn().State);
+        arg004=State.moveRight(arg003);
+        arg101=State.show(arg004);
+        Var1.Set(arg002,arg101);
+        arg005=Client.laptopBtn().State;
+        arg006=Var1.Get(Client.laptopBtn().State);
+        arg007=State.moveRight(arg006);
+        arg102=State.show(arg007);
+        Var1.Set(arg005,arg102);
+        arg008=Client.accessoriesBtn().State;
+        arg009=Var1.Get(Client.accessoriesBtn().State);
+        arg00a=State.moveRight(arg009);
+        arg103=State.show(arg00a);
+        return Var1.Set(arg008,arg103);
+       };
+      })]),List.ofArray([Doc.TextNode("\u2039")])),Doc.Element("div",ats1,List.ofArray([Doc.Element("div",[],arg20),Doc.Element("div",[],arg201),Doc.Element("div",[],arg202)]))]));
+     }),
+     tablet:Runtime.Field(function()
+     {
+      var ats,ats1,arg20,arg201,arg202;
+      ats=List.ofArray([AttrProxy.Create("class","menu-content"),AttrModule.AnimatedStyle("opacity",Client.transition(0),View1.Const(1),function(_)
+      {
+       return _.toFixed(6);
+      })]);
+      ats1=List.ofArray([AttrProxy.Create("class","menu-content-links")]);
+      arg20=List.ofArray([Doc.TextNode("Ipad")]);
+      arg201=List.ofArray([Doc.TextNode("Samsung Galaxy tab")]);
+      arg202=List.ofArray([Doc.TextNode("Android")]);
+      return Doc.Element("div",ats,List.ofArray([Doc.Element("div",List.ofArray([AttrProxy.Create("class","menu-content-back"),AttrModule.Handler("click",function()
+      {
+       return function()
+       {
+        var arg00,arg001,arg002,arg10,arg003,arg004,arg005,arg101,arg006,arg007,arg008,arg102,arg009,arg00a,arg00b,arg103;
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg002=State.moveRight(arg001);
+        arg10=State.show(arg002);
+        Var1.Set(arg00,arg10);
+        arg003=Client.tabletBtn().State;
+        arg004=Var1.Get(Client.tabletBtn().State);
+        arg005=State.unselect(arg004);
+        arg101=State.moveDown(arg005);
+        Var1.Set(arg003,arg101);
+        arg006=Client.laptopBtn().State;
+        arg007=Var1.Get(Client.laptopBtn().State);
+        arg008=State.moveRight(arg007);
+        arg102=State.show(arg008);
+        Var1.Set(arg006,arg102);
+        arg009=Client.accessoriesBtn().State;
+        arg00a=Var1.Get(Client.accessoriesBtn().State);
+        arg00b=State.moveRight(arg00a);
+        arg103=State.show(arg00b);
+        return Var1.Set(arg009,arg103);
+       };
+      })]),List.ofArray([Doc.TextNode("\u2039")])),Doc.Element("div",ats1,List.ofArray([Doc.Element("div",[],arg20),Doc.Element("div",[],arg201),Doc.Element("div",[],arg202)]))]));
+     })
+    },
+    Selection:{
+     accessories:function()
+     {
+      var _,arg00,arg001,arg002,arg10,arg003,arg004,arg005,arg101,arg006,arg007,arg008,arg102,arg009,arg00a,arg103,arg104;
+      if(!Var1.Get(Client.accessoriesBtn().State).IsSelected)
+       {
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg002=State.moveLeft(arg001);
+        arg10=State.hide(arg002);
+        Var1.Set(arg00,arg10);
+        arg003=Client.tabletBtn().State;
+        arg004=Var1.Get(Client.tabletBtn().State);
+        arg005=State.moveLeft(arg004);
+        arg101=State.hide(arg005);
+        Var1.Set(arg003,arg101);
+        arg006=Client.laptopBtn().State;
+        arg007=Var1.Get(Client.laptopBtn().State);
+        arg008=State.moveLeft(arg007);
+        arg102=State.hide(arg008);
+        Var1.Set(arg006,arg102);
+        arg009=Client.accessoriesBtn().State;
+        arg00a=Var1.Get(Client.accessoriesBtn().State);
+        arg103=State.select(arg00a);
+        arg104=State.moveUpN(3,arg103);
+        _=Var1.Set(arg009,arg104);
+       }
+      else
+       {
+        _=null;
+       }
+      return _;
+     },
+     laptop:function()
+     {
+      var _,arg00,arg001,arg002,arg10,arg003,arg004,arg005,arg101,arg006,arg007,arg102,arg103,arg008,arg009,arg00a,arg104;
+      if(!Var1.Get(Client.laptopBtn().State).IsSelected)
+       {
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg002=State.moveLeft(arg001);
+        arg10=State.hide(arg002);
+        Var1.Set(arg00,arg10);
+        arg003=Client.tabletBtn().State;
+        arg004=Var1.Get(Client.tabletBtn().State);
+        arg005=State.moveLeft(arg004);
+        arg101=State.hide(arg005);
+        Var1.Set(arg003,arg101);
+        arg006=Client.laptopBtn().State;
+        arg007=Var1.Get(Client.laptopBtn().State);
+        arg102=State.select(arg007);
+        arg103=State.moveUpN(2,arg102);
+        Var1.Set(arg006,arg103);
+        arg008=Client.accessoriesBtn().State;
+        arg009=Var1.Get(Client.accessoriesBtn().State);
+        arg00a=State.moveLeft(arg009);
+        arg104=State.hide(arg00a);
+        _=Var1.Set(arg008,arg104);
+       }
+      else
+       {
+        _=null;
+       }
+      return _;
+     },
+     mobile:function()
+     {
+      var _,arg00,arg001,arg10,arg002,arg003,arg004,arg101,arg005,arg006,arg007,arg102,arg008,arg009,arg00a,arg103;
+      if(!Var1.Get(Client.mobileBtn().State).IsSelected)
+       {
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg10=State.select(arg001);
+        Var1.Set(arg00,arg10);
+        arg002=Client.tabletBtn().State;
+        arg003=Var1.Get(Client.tabletBtn().State);
+        arg004=State.moveLeft(arg003);
+        arg101=State.hide(arg004);
+        Var1.Set(arg002,arg101);
+        arg005=Client.laptopBtn().State;
+        arg006=Var1.Get(Client.laptopBtn().State);
+        arg007=State.moveLeft(arg006);
+        arg102=State.hide(arg007);
+        Var1.Set(arg005,arg102);
+        arg008=Client.accessoriesBtn().State;
+        arg009=Var1.Get(Client.accessoriesBtn().State);
+        arg00a=State.moveLeft(arg009);
+        arg103=State.hide(arg00a);
+        _=Var1.Set(arg008,arg103);
+       }
+      else
+       {
+        _=null;
+       }
+      return _;
+     },
+     tablet:function()
+     {
+      var _,arg00,arg001,arg002,arg10,arg003,arg004,arg005,arg101,arg006,arg007,arg008,arg102,arg009,arg00a,arg00b,arg103;
+      if(!Var1.Get(Client.tabletBtn().State).IsSelected)
+       {
+        arg00=Client.mobileBtn().State;
+        arg001=Var1.Get(Client.mobileBtn().State);
+        arg002=State.moveLeft(arg001);
+        arg10=State.hide(arg002);
+        Var1.Set(arg00,arg10);
+        arg003=Client.tabletBtn().State;
+        arg004=Var1.Get(Client.tabletBtn().State);
+        arg005=State.select(arg004);
+        arg101=State.moveUp(arg005);
+        Var1.Set(arg003,arg101);
+        arg006=Client.laptopBtn().State;
+        arg007=Var1.Get(Client.laptopBtn().State);
+        arg008=State.moveLeft(arg007);
+        arg102=State.hide(arg008);
+        Var1.Set(arg006,arg102);
+        arg009=Client.accessoriesBtn().State;
+        arg00a=Var1.Get(Client.accessoriesBtn().State);
+        arg00b=State.moveLeft(arg00a);
+        arg103=State.hide(arg00b);
+        _=Var1.Set(arg009,arg103);
+       }
+      else
+       {
+        _=null;
+       }
+      return _;
+     }
+    },
+    State:Runtime.Class({},{
+     create:function()
+     {
+      return Runtime.New(State,{
+       Opacity:1,
+       Position:{
+        Top:0,
+        Left:0
+       },
+       IsSelected:false
+      });
+     },
+     hide:function(x)
+     {
+      return Runtime.New(State,{
+       Opacity:0,
+       Position:x.Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     moveDown:function(x)
+     {
+      var inputRecord,Position;
+      inputRecord=x.Position;
+      Position={
+       Top:x.Position.Top+1,
+       Left:inputRecord.Left
+      };
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     moveDownN:function(n,x)
+     {
+      var inputRecord,Position;
+      inputRecord=x.Position;
+      Position={
+       Top:x.Position.Top+Number(n)*1,
+       Left:inputRecord.Left
+      };
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     moveLeft:function(x)
+     {
+      var inputRecord,Left,Position;
+      inputRecord=x.Position;
+      Left=x.Position.Left-1;
+      Position={
+       Top:inputRecord.Top,
+       Left:Left
+      };
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     moveRight:function(x)
+     {
+      var inputRecord,Left,Position;
+      inputRecord=x.Position;
+      Left=x.Position.Left+1;
+      Position={
+       Top:inputRecord.Top,
+       Left:Left
+      };
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     moveUp:function(x)
+     {
+      var inputRecord,Position;
+      inputRecord=x.Position;
+      Position={
+       Top:x.Position.Top-1,
+       Left:inputRecord.Left
+      };
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     moveUpN:function(n,x)
+     {
+      var inputRecord,Position;
+      inputRecord=x.Position;
+      Position={
+       Top:x.Position.Top-Number(n)*1,
+       Left:inputRecord.Left
+      };
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     select:function(x)
+     {
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:x.Position,
+       IsSelected:true
+      });
+     },
+     show:function(x)
+     {
+      return Runtime.New(State,{
+       Opacity:1,
+       Position:x.Position,
+       IsSelected:x.IsSelected
+      });
+     },
+     unselect:function(x)
+     {
+      return Runtime.New(State,{
+       Opacity:x.Opacity,
+       Position:x.Position,
+       IsSelected:false
+      });
+     }
+    }),
+    accessoriesBtn:Runtime.Field(function()
     {
-     var source,arg20;
-     arg20=List.ofArray([Doc.TextNode("hide"),Doc.CheckBox(Runtime.New(T,{
-      $:0
-     }),Client.rvShow())]);
-     source=List.ofArray([Doc.Element("div",[],arg20),Doc.IntInputUnchecked(Runtime.New(T,{
-      $:0
-     }),Client.rvTest())]);
-     return source;
+     var arg10,arg101,x,arg00;
+     arg10=Button.create();
+     arg101=Button.setIcon("fa-keyboard-o",arg10);
+     x=Button.setTitle("Accessories",arg101);
+     arg00=Colors.grey();
+     return Button.setColor(arg00,x);
+    }),
+    laptopBtn:Runtime.Field(function()
+    {
+     var arg10,arg101,x,arg00;
+     arg10=Button.create();
+     arg101=Button.setIcon("fa-laptop",arg10);
+     x=Button.setTitle("Laptops",arg101);
+     arg00=Colors.blue();
+     return Button.setColor(arg00,x);
     }),
     main:Runtime.Field(function()
     {
-     var x;
-     x=Client.rvShow().get_View();
-     return Doc.RunById("main",Doc.Concat(List.ofArray([Doc.EmbedView(View.Map(function(_arg1)
+     var ats;
+     ats=List.ofArray([AttrProxy.Create("class","menu")]);
+     return Doc.RunById("main",Doc.Element("div",ats,List.ofArray([Button.render(Button.onClick(function()
      {
-      return _arg1?Doc.Element("div",List.ofArray([AttrProxy.Create("style","float: left;"),AttrModule.AnimatedStyle("opacity",Client.animation(),View1.Const(1),function(value)
+      return Selection.mobile();
+     },Client.mobileBtn())),Button.render(Button.onClick(function()
+     {
+      return Selection.tablet();
+     },Client.tabletBtn())),Button.render(Button.onClick(function()
+     {
+      return Selection.laptop();
+     },Client.laptopBtn())),Button.render(Button.onClick(function()
+     {
+      return Selection.accessories();
+     },Client.accessoriesBtn())),Doc.EmbedView(Client.op_LessMultiplyGreater(Client.op_LessMultiplyGreater(Client.op_LessMultiplyGreater(Client.op_LessMultiplyGreater(View1.Const(function(sm)
+     {
+      return function(st)
       {
-       return Global.String(value);
-      }),AttrModule.AnimatedStyle("transform",Client.animation(),View.Map(function(value)
-      {
-       return+value;
-      },Client.rvTest().get_View()),function(_)
-      {
-       return"translateY("+_.toFixed(6)+"em)";
-      })]),List.ofArray([Doc.Element("h1",List.ofArray([AttrProxy.Create("style","width: 160px;")]),List.ofArray([Doc.TextNode("hello world")]))])):Doc.get_Empty();
-     },x)),Doc.Element("div",List.ofArray([AttrProxy.Create("style","float: right;")]),Client.btns())])));
+       return function(sl)
+       {
+        return function(sa)
+        {
+         return sm.IsSelected?Content.mobile():st.IsSelected?Content.tablet():sl.IsSelected?Content.laptop():sa.IsSelected?Content.accessories():Doc.get_Empty();
+        };
+       };
+      };
+     }),Client.mobileBtn().State.get_View()),Client.tabletBtn().State.get_View()),Client.laptopBtn().State.get_View()),Client.accessoriesBtn().State.get_View()))])));
     }),
-    rvShow:Runtime.Field(function()
+    mobileBtn:Runtime.Field(function()
     {
-     return Var.Create(true);
+     var arg10,arg101,x,arg00;
+     arg10=Button.create();
+     arg101=Button.setIcon("fa-mobile",arg10);
+     x=Button.setTitle("Mobile phones",arg101);
+     arg00=Colors.green();
+     return Button.setColor(arg00,x);
     }),
-    rvTest:Runtime.Field(function()
+    op_LessMultiplyGreater:function(f,m)
     {
-     return Var.Create(5);
-    })
+     return View1.Apply(f,m);
+    },
+    tabletBtn:Runtime.Field(function()
+    {
+     var arg10,arg101,x,arg00;
+     arg10=Button.create();
+     arg101=Button.setIcon("fa-tablet",arg10);
+     x=Button.setTitle("Tablets",arg101);
+     arg00=Colors.red();
+     return Button.setColor(arg00,x);
+    }),
+    transition:function(initial)
+    {
+     var anim,x,arg001,arg002,arg101,x1,arg003;
+     anim=function(time)
+     {
+      var arg00,arg10;
+      arg00=Interpolation1.get_Double();
+      arg10=Easing.get_CubicInOut();
+      return function(arg30)
+      {
+       return function(arg40)
+       {
+        return An.Simple(arg00,arg10,time,arg30,arg40);
+       };
+      };
+     };
+     x=Trans.Trivial();
+     arg001=anim(350);
+     arg002=function(v)
+     {
+      return((anim(200))(initial))(v);
+     };
+     arg101=Trans1.Change(arg001,x);
+     x1=Trans1.Enter(arg002,arg101);
+     arg003=function(v)
+     {
+      return((anim(200))(v))(initial);
+     };
+     return Trans1.Exit(arg003,x1);
+    }
    }
   }
  });
  Runtime.OnInit(function()
  {
   AnimationUINext=Runtime.Safe(Global.AnimationUINext);
-  Animation=Runtime.Safe(AnimationUINext.Animation);
+  Client=Runtime.Safe(AnimationUINext.Client);
+  Button=Runtime.Safe(Client.Button);
   UI=Runtime.Safe(Global.WebSharper.UI);
   Next=Runtime.Safe(UI.Next);
-  Trans=Runtime.Safe(Next.Trans);
-  Trans1=Runtime.Safe(Next.Trans1);
+  Var=Runtime.Safe(Next.Var);
+  State=Runtime.Safe(Client.State);
+  List=Runtime.Safe(Global.WebSharper.List);
+  AttrProxy=Runtime.Safe(Next.AttrProxy);
   AttrModule=Runtime.Safe(Next.AttrModule);
-  View1=Runtime.Safe(Next.View1);
-  Fade=Runtime.Safe(Animation.Fade);
+  Var1=Runtime.Safe(Next.Var1);
+  View=Runtime.Safe(Next.View);
+  Doc=Runtime.Safe(Next.Doc);
   PrintfHelpers=Runtime.Safe(Global.WebSharper.PrintfHelpers);
-  Slide=Runtime.Safe(Animation.Slide);
+  T=Runtime.Safe(List.T);
+  View1=Runtime.Safe(Next.View1);
+  Number=Runtime.Safe(Global.Number);
+  Colors=Runtime.Safe(Client.Colors);
+  Selection=Runtime.Safe(Client.Selection);
+  Content=Runtime.Safe(Client.Content);
   Interpolation1=Runtime.Safe(Next.Interpolation1);
   Easing=Runtime.Safe(Next.Easing);
   An=Runtime.Safe(Next.An);
-  Client=Runtime.Safe(AnimationUINext.Client);
-  List=Runtime.Safe(Global.WebSharper.List);
-  Doc=Runtime.Safe(Next.Doc);
-  T=Runtime.Safe(List.T);
-  View=Runtime.Safe(Next.View);
-  AttrProxy=Runtime.Safe(Next.AttrProxy);
-  return Var=Runtime.Safe(Next.Var);
+  Trans=Runtime.Safe(Next.Trans);
+  return Trans1=Runtime.Safe(Next.Trans1);
  });
  Runtime.OnLoad(function()
  {
-  Client.rvTest();
-  Client.rvShow();
+  Client.tabletBtn();
+  Client.mobileBtn();
   Client.main();
-  Client.btns();
-  Client.animation();
-  Client.anim1();
+  Client.laptopBtn();
+  Client.accessoriesBtn();
+  Content.tablet();
+  Content.mobile();
+  Content.laptop();
+  Content.accessories();
+  Colors.red();
+  Colors.grey();
+  Colors.green();
+  Colors.blue();
   return;
  });
 }());

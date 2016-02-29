@@ -1,6 +1,12 @@
 ﻿<Properties StartupItem="AnimationUINext/AnimationUINext.fsproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="AnimationUINext/Client.fs">
+    <Files>
+      <File FileName="AnimationUINext/Client.fs" Line="79" Column="87" />
+      <File FileName="AnimationUINext/index.html" Line="8" Column="106" />
+      <File FileName="AnimationUINext/style.css" Line="16" Column="18" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

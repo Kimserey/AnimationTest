@@ -1,0 +1,64 @@
+﻿body {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
+
+.fa-2x {
+	vertical-align: middle;
+}
+
+.menu {
+	font-size: x-large;	
+	width: 300px;
+	height: 192px;
+	-webkit-box-shadow: 0px 1px 6px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0px 1px 6px 0px rgba(0,0,0,0.2);
+	box-shadow: 0px 1px 6px 0px rgba(0,0,0,0.2);
+}
+	.menu-button {
+		position: relative; 
+    	z-index: 1;
+   		top: 0; 
+    	left: 0; 
+   		width: 300px;
+		background-color: #F4F4F4;
+	}
+	
+	.menu-button:hover {
+		color: white;
+		cursor: pointer;
+	}
+		.menu-button-icon {
+			display: inline-block;
+			color: white;
+			padding-left: .5em;
+		}
+
+		.menu-button-text {
+			display: inline-block;
+			padding-left: .5em;
+		}
+
+		.menu-content {
+			position: relative;
+			background-color: #F4F4F4;
+       		opacity: 0.;
+       		top:-144px;
+       		font-size: large;
+       		line-height: 1.5em;
+       		height: 144px;
+		}
+
+			.menu-content-back {
+			    float: left;
+			    height: 144px;
+			    line-height: 144px;
+			    padding: 0 5px;
+			    background-color: white;
+			    cursor: pointer;
+			}
+
+			.menu-content-links {
+				padding-left: 1.5em;
+				padding-top: .5em;
+			}

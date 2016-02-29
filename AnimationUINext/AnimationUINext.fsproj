@@ -44,6 +44,7 @@
     <Content Include="Global.asax" />
     <Compile Include="Global.asax.fs" />
     <Content Include="packages.config" />
+    <Content Include="style.css" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
