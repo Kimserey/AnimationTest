@@ -46,5 +46,5 @@ module SimpleAnimation =
                 Doc.Empty)
           |> Doc.EmbedView ]
         |> Doc.Concat
-        |> Doc.RunBeforeById "main"
+        |> Doc.RunById "main"
 

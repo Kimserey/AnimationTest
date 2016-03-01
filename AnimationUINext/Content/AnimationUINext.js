@@ -17712,7 +17712,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     {
      var ats;
      ats=List.ofArray([AttrProxy.Create("class","menu")]);
-     return Doc.RunBeforeById("main",Doc.Element("div",ats,List.ofArray([Button.render(Button.onClick(function()
+     return Doc.RunAfterById("main",Doc.Element("div",ats,List.ofArray([Button.render(Button.onClick(function()
      {
       return Selection.mobile();
      },Client.mobileBtn())),Button.render(Button.onClick(function()
@@ -17844,7 +17844,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
      _arg00_=View.Map(arg001,x);
      arg00=List.ofArray([Doc.Button("Toggle",_arg10_,_arg20_),Doc.EmbedView(_arg00_)]);
      _arg10_3=Doc.Concat(arg00);
-     return Doc.RunBeforeById("main",_arg10_3);
+     return Doc.RunById("main",_arg10_3);
     }),
     rvShow:Runtime.Field(function()
     {

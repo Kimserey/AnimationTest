@@ -240,4 +240,4 @@ module Client =
                   <*> laptopBtn.State.View
                   <*> accessoriesBtn.State.View
                   |> Doc.EmbedView ]
-        |> Doc.RunBeforeById "main"
+        |> Doc.RunAfterById "main"
