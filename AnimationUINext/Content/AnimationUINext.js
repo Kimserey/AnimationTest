@@ -17105,7 +17105,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
 ;
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,UI,Next,Var,AnimationUINext,Client,State,Button,List,AttrModule,View,Var1,Doc,AttrProxy,PrintfHelpers,T,View1,Number,Colors,Selection,Content,Interpolation1,Easing,An,Trans,Trans1;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,UI,Next,Var,AnimationUINext,Client,State,Button,List,AttrModule,View,Var1,Doc,AttrProxy,PrintfHelpers,T,View1,Number,Colors,Selection,Content,Interpolation1,Easing,An,Trans,Trans1,SimpleAnimation;
  Runtime.Define(Global,{
   AnimationUINext:{
    Client:{
@@ -17712,7 +17712,7 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
     {
      var ats;
      ats=List.ofArray([AttrProxy.Create("class","menu")]);
-     return Doc.RunById("main",Doc.Element("div",ats,List.ofArray([Button.render(Button.onClick(function()
+     return Doc.RunBeforeById("main",Doc.Element("div",ats,List.ofArray([Button.render(Button.onClick(function()
      {
       return Selection.mobile();
      },Client.mobileBtn())),Button.render(Button.onClick(function()
@@ -17792,6 +17792,79 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
      };
      return Trans1.Exit(arg003,x1);
     }
+   },
+   SimpleAnimation:{
+    anim:Runtime.Field(function()
+    {
+     var arg00,arg10;
+     arg00=Interpolation1.get_Double();
+     arg10=Easing.get_CubicInOut();
+     return function(arg30)
+     {
+      return function(arg40)
+      {
+       return An.Simple(arg00,arg10,500,arg30,arg40);
+      };
+     };
+    }),
+    main:Runtime.Field(function()
+    {
+     var arg00,_arg10_,_arg20_,x,arg001,_arg00_,_arg10_3;
+     _arg10_=List.ofArray([AttrProxy.Create("style","display: block;")]);
+     _arg20_=function()
+     {
+      return Var1.Set(SimpleAnimation.rvShow(),!Var1.Get(SimpleAnimation.rvShow()));
+     };
+     x=SimpleAnimation.rvShow().get_View();
+     arg001=function(show)
+     {
+      var _,_arg10_1,view,value,_arg10_2,view1,value1;
+      if(show)
+       {
+        _arg10_1=SimpleAnimation.trans();
+        view=View1.Const(5);
+        value=function(_1)
+        {
+         return"translate("+_1.toFixed(6)+"em)";
+        };
+        _arg10_2=SimpleAnimation.trans();
+        view1=View1.Const(1);
+        value1=function(_1)
+        {
+         return _1.toFixed(6);
+        };
+        _=Doc.Element("h1",List.ofArray([AttrModule.AnimatedStyle("transform",_arg10_1,view,value),AttrModule.AnimatedStyle("opacity",_arg10_2,view1,value1)]),List.ofArray([Doc.TextNode("Hello world.")]));
+       }
+      else
+       {
+        _=Doc.get_Empty();
+       }
+      return _;
+     };
+     _arg00_=View.Map(arg001,x);
+     arg00=List.ofArray([Doc.Button("Toggle",_arg10_,_arg20_),Doc.EmbedView(_arg00_)]);
+     _arg10_3=Doc.Concat(arg00);
+     return Doc.RunBeforeById("main",_arg10_3);
+    }),
+    rvShow:Runtime.Field(function()
+    {
+     return Var.Create(true);
+    }),
+    trans:Runtime.Field(function()
+    {
+     var arg00,arg001,arg10,arg101;
+     arg00=function(v)
+     {
+      return((SimpleAnimation.anim())(0))(v);
+     };
+     arg001=function(v)
+     {
+      return((SimpleAnimation.anim())(v))(0);
+     };
+     arg10=Trans.Trivial();
+     arg101=Trans1.Enter(arg00,arg10);
+     return Trans1.Exit(arg001,arg101);
+    })
    }
   }
  });
@@ -17821,10 +17894,15 @@ var JSON;JSON||(JSON={}),function(){"use strict";function i(n){return n<10?"0"+n
   Easing=Runtime.Safe(Next.Easing);
   An=Runtime.Safe(Next.An);
   Trans=Runtime.Safe(Next.Trans);
-  return Trans1=Runtime.Safe(Next.Trans1);
+  Trans1=Runtime.Safe(Next.Trans1);
+  return SimpleAnimation=Runtime.Safe(AnimationUINext.SimpleAnimation);
  });
  Runtime.OnLoad(function()
  {
+  SimpleAnimation.trans();
+  SimpleAnimation.rvShow();
+  SimpleAnimation.main();
+  SimpleAnimation.anim();
   Client.tabletBtn();
   Client.mobileBtn();
   Client.main();
